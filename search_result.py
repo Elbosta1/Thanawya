@@ -38,7 +38,7 @@ class PremiumResultApp(ctk.CTk):
         self.btn_search.pack(side="left", padx=10)
         
         # Entry (right side)
-        self.entry_search = ctk.CTkEntry(self.frame_search, font=self.normal_font, placeholder_text="أدخل اسم الطالب هنا...", justify="right", height=40)
+        self.entry_search = ctk.CTkEntry(self.frame_search, font=self.normal_font, placeholder_text="أدخل اسم الطالب أو رقم الجلوس هنا...", justify="right", height=40)
         self.entry_search.pack(side="left", fill="x", expand=True)
         self.entry_search.bind('<Return>', lambda event: self.search())
         
@@ -66,21 +66,31 @@ class PremiumResultApp(ctk.CTk):
         if self.df is None:
             return
             
-        name = self.entry_search.get().strip()
-        if not name:
-            messagebox.showwarning("تنبيه", "يرجى إدخال اسم للبحث")
+        query = self.entry_search.get().strip()
+        if not query:
+            messagebox.showwarning("تنبيه", "يرجى إدخال اسم أو رقم جلوس للبحث")
             return
             
         self.text_result.delete("1.0", "end")
-        self.text_result.insert("end", f"جاري البحث عن: {name}...\n\n", 'right')
+        self.text_result.insert("end", f"جاري البحث عن: {query}...\n\n", 'right')
         
-        mask = self.df['arabic_name'].fillna('').astype(str).str.contains(name, na=False, regex=False)
+        # Clean seating_no to string without decimal '.0'
+        seating_str = self.df['seating_no'].fillna('').astype(str).str.replace(r'\.0$', '', regex=True)
+        name_str = self.df['arabic_name'].fillna('').astype(str)
+        
+        if query.isdigit():
+            # Exact match for seating number
+            mask = seating_str == query
+        else:
+            # Partial match for name
+            mask = name_str.str.contains(query, na=False, regex=False)
+            
         results = self.df[mask]
         
         self.text_result.delete("1.0", "end")
         
         if results.empty:
-            self.text_result.insert("end", "لم يتم العثور على طالب بهذا الاسم.\n", 'right')
+            self.text_result.insert("end", "لم يتم العثور على طالب بهذا الاسم أو رقم الجلوس.\n", 'right')
         else:
             self.text_result.insert("end", f"تم العثور على {len(results)} نتيجة:\n\n", 'right')
             for index, row in results.iterrows():
