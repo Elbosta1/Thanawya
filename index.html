@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الثانوية العامة</title>
+    <!-- Google Fonts for Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-container">
+        <header>
+            <h1>الاستعلام عن نتيجة الثانوية العامة</h1>
+            <p>أدخل اسم الطالب أو رقم الجلوس لمعرفة النتيجة فوراً</p>
+        </header>
+        
+        <main>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="أدخل اسم الطالب أو رقم الجلوس..." autocomplete="off">
+                <button id="searchBtn" disabled>بحث</button>
+            </div>
+            
+            <div id="status" class="status loading">
+                <div class="spinner"></div>
+                <span id="statusText">جاري تحميل البيانات الأساسية... (قد يستغرق بعض الوقت في المرة الأولى)</span>
+            </div>
+            
+            <div id="resultsContainer" class="results-container hidden">
+                <p id="resultsCount" class="results-count"></p>
+                <div id="cardsWrapper" class="cards-wrapper"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PapaParse for fast CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Main Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
